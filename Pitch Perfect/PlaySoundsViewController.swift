@@ -22,13 +22,23 @@ class PlaySoundsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
+        do {
+            try audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl)
+        } catch {
+            print("Error initializing AVAudioPlayer")
+        }
+        
         audioPlayer.enableRate = true
         audioPlayer.prepareToPlay();
         
         // Initializes audioEngine and avAudioPlayers instances used to play the recorded audio with pitch effect
         audioEngine = AVAudioEngine()
-        avAudioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
+        do {
+            avAudioFile = try AVAudioFile(forReading: receivedAudio.filePathUrl)
+        } catch _ {
+            avAudioFile = nil
+            print("Error reading AVAudioFile")
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -97,8 +107,8 @@ class PlaySoundsViewController: UIViewController {
         audioPlayer.stop()
         audioEngine.stop()
         
-        var pitchPlayer = AVAudioPlayerNode()
-        var timePitch = AVAudioUnitTimePitch()
+        let pitchPlayer = AVAudioPlayerNode()
+        let timePitch = AVAudioUnitTimePitch()
         timePitch.pitch = pitch
         
         audioEngine.attachNode(pitchPlayer)
@@ -108,7 +118,12 @@ class PlaySoundsViewController: UIViewController {
         audioEngine.connect(timePitch, to: audioEngine.outputNode, format: nil)
         
         pitchPlayer.scheduleFile(avAudioFile, atTime: nil, completionHandler: nil)
-        audioEngine.startAndReturnError(nil)
+        
+        do {
+            try audioEngine.start()
+        } catch _ {
+            print("Error starting audioEngine")
+        }
         pitchPlayer.play()
     }
 }
