@@ -52,7 +52,7 @@ class PlaySoundsViewController: UIViewController {
         :param sender
     */
     @IBAction func playSlow(sender: UIButton) {
-        audioPlayer.stop()
+        self.stopAllAudio()
         playAudio(0.5)
     }
     
@@ -61,7 +61,7 @@ class PlaySoundsViewController: UIViewController {
         :param sender
     */
     @IBAction func playFast(sender: UIButton) {
-        audioPlayer.stop()
+        self.stopAllAudio()
         playAudio(2.0)
     }
     
@@ -70,7 +70,7 @@ class PlaySoundsViewController: UIViewController {
         :param sender
     */
     @IBAction func stopAudio(sender: UIButton) {
-        audioPlayer.stop()
+        self.stopAllAudio()
     }
 
     /*
@@ -78,6 +78,7 @@ class PlaySoundsViewController: UIViewController {
         :param sender
     */
     @IBAction func playChipmunkAudio(sender: UIButton) {
+        self.stopAllAudio()
         playAudioWithVariablePitch(1000)
     }
     
@@ -86,7 +87,16 @@ class PlaySoundsViewController: UIViewController {
         :param sender
     */
     @IBAction func playDarthVaderAudio(sender: UIButton) {
+        self.stopAllAudio()
         playAudioWithVariablePitch(-1000)
+    }
+    
+    /*
+        Stops the audio player & engine to avoid sound overlap.
+    */
+    func stopAllAudio() {
+        audioPlayer.stop()
+        audioEngine.stop()
     }
     
     /*
@@ -94,8 +104,7 @@ class PlaySoundsViewController: UIViewController {
         :param: pitch The variable pitch rate the audio will be played at.
     */
     func playAudioWithVariablePitch(pitch: Float) {
-        audioPlayer.stop()
-        audioEngine.stop()
+        self.stopAllAudio()
         
         var pitchPlayer = AVAudioPlayerNode()
         var timePitch = AVAudioUnitTimePitch()

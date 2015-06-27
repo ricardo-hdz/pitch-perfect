@@ -50,6 +50,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         :param: animated
     */
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
         // Hide the stop button
         stopButton.hidden = true
         recordButton.enabled = true
